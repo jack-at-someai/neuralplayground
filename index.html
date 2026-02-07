@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Playground</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <h1>Neural Network <span class="accent">Playground</span></h1>
+            <p class="subtitle">Tinker with a neural network right here in your browser.</p>
+        </div>
+    </header>
+
+    <!-- Top Controls Bar -->
+    <div class="top-bar">
+        <div class="playback">
+            <button id="btn-reset" class="btn-icon" title="Reset">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 2v12l4-4V2zM8 2v12l4-4V2z" fill="currentColor"/></svg>
+            </button>
+            <button id="btn-play" class="btn-play" title="Play / Pause">
+                <svg id="icon-play" width="24" height="24" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+                <svg id="icon-pause" width="24" height="24" viewBox="0 0 24 24" style="display:none"><rect x="5" y="3" width="4" height="18" fill="currentColor"/><rect x="13" y="3" width="4" height="18" fill="currentColor"/></svg>
+            </button>
+            <button id="btn-step" class="btn-icon" title="Step">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 2v12l6-6zm7 0v12l6-6z" fill="currentColor"/></svg>
+            </button>
+            <div class="epoch-display">
+                <span class="epoch-label">Epoch</span>
+                <span id="epoch-count" class="epoch-value">000</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>Learning rate
+                <select id="sel-lr">
+                    <option value="0.00001">0.00001</option>
+                    <option value="0.0001">0.0001</option>
+                    <option value="0.001">0.001</option>
+                    <option value="0.003" selected>0.003</option>
+                    <option value="0.01">0.01</option>
+                    <option value="0.03">0.03</option>
+                    <option value="0.1">0.1</option>
+                    <option value="0.3">0.3</option>
+                    <option value="1">1</option>
+                    <option value="3">3</option>
+                    <option value="10">10</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label>Activation
+                <select id="sel-activation">
+                    <option value="relu">ReLU</option>
+                    <option value="tanh" selected>Tanh</option>
+                    <option value="sigmoid">Sigmoid</option>
+                    <option value="linear">Linear</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label>Regularization
+                <select id="sel-reg">
+                    <option value="none" selected>None</option>
+                    <option value="l1">L1</option>
+                    <option value="l2">L2</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label>Reg. rate
+                <select id="sel-reg-rate">
+                    <option value="0" selected>0</option>
+                    <option value="0.001">0.001</option>
+                    <option value="0.003">0.003</option>
+                    <option value="0.01">0.01</option>
+                    <option value="0.03">0.03</option>
+                    <option value="0.1">0.1</option>
+                    <option value="0.3">0.3</option>
+                    <option value="1">1</option>
+                    <option value="3">3</option>
+                    <option value="10">10</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label>Problem type
+                <select id="sel-problem">
+                    <option value="classification" selected>Classification</option>
+                    <option value="regression">Regression</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <!-- Main Area -->
+    <div class="main-area">
+        <!-- Left Column: Data -->
+        <div class="col-data">
+            <div class="section-label">DATA</div>
+            <div class="dataset-picker" id="dataset-picker">
+                <canvas class="dataset-thumb active" data-set="circle" width="60" height="60" title="Circle"></canvas>
+                <canvas class="dataset-thumb" data-set="xor" width="60" height="60" title="XOR"></canvas>
+                <canvas class="dataset-thumb" data-set="gaussian" width="60" height="60" title="Gaussian"></canvas>
+                <canvas class="dataset-thumb" data-set="spiral" width="60" height="60" title="Spiral"></canvas>
+            </div>
+
+            <div class="data-controls">
+                <label>Ratio of training to test data
+                    <div class="slider-row">
+                        <input type="range" id="sl-ratio" min="10" max="90" value="50" step="10">
+                        <span id="val-ratio">50%</span>
+                    </div>
+                </label>
+                <label>Noise
+                    <div class="slider-row">
+                        <input type="range" id="sl-noise" min="0" max="50" value="0" step="5">
+                        <span id="val-noise">0</span>
+                    </div>
+                </label>
+                <label>Batch size
+                    <select id="sel-batch">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                    </select>
+                </label>
+                <button id="btn-regen" class="btn">Regenerate</button>
+            </div>
+
+            <div class="section-label">FEATURES</div>
+            <div class="features-grid" id="features-grid">
+                <label class="feature-item active"><input type="checkbox" data-feat="x1" checked><canvas width="40" height="40"></canvas><span>X<sub>1</sub></span></label>
+                <label class="feature-item active"><input type="checkbox" data-feat="x2" checked><canvas width="40" height="40"></canvas><span>X<sub>2</sub></span></label>
+                <label class="feature-item"><input type="checkbox" data-feat="x1sq"><canvas width="40" height="40"></canvas><span>X<sub>1</sub><sup>2</sup></span></label>
+                <label class="feature-item"><input type="checkbox" data-feat="x2sq"><canvas width="40" height="40"></canvas><span>X<sub>2</sub><sup>2</sup></span></label>
+                <label class="feature-item"><input type="checkbox" data-feat="x1x2"><canvas width="40" height="40"></canvas><span>X<sub>1</sub>X<sub>2</sub></span></label>
+                <label class="feature-item"><input type="checkbox" data-feat="sinx1"><canvas width="40" height="40"></canvas><span>sin(X<sub>1</sub>)</span></label>
+                <label class="feature-item"><input type="checkbox" data-feat="sinx2"><canvas width="40" height="40"></canvas><span>sin(X<sub>2</sub>)</span></label>
+            </div>
+        </div>
+
+        <!-- Center: Network Visualization -->
+        <div class="col-network">
+            <div class="layer-headers" id="layer-headers"></div>
+            <canvas id="network-canvas"></canvas>
+        </div>
+
+        <!-- Right Column: Output -->
+        <div class="col-output">
+            <div class="section-label">OUTPUT</div>
+            <canvas id="output-canvas" width="300" height="300"></canvas>
+            <div class="output-controls">
+                <label><input type="checkbox" id="chk-test-data" checked> Show test data</label>
+                <label><input type="checkbox" id="chk-discretize"> Discretize output</label>
+            </div>
+            <div class="loss-display">
+                <div class="loss-row"><span class="loss-label">Test loss</span><span id="test-loss" class="loss-value">—</span></div>
+                <div class="loss-row"><span class="loss-label">Training loss</span><span id="train-loss" class="loss-value">—</span></div>
+            </div>
+            <canvas id="loss-canvas" width="300" height="120"></canvas>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
