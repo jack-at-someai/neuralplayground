@@ -745,71 +745,69 @@
 
         const numLayers = State.hiddenLayers.length;
 
-        // Add-layer button at start
-        const addLayerBtn = document.createElement('div');
-        addLayerBtn.className = 'layer-header';
-        addLayerBtn.innerHTML = `
-            <span class="layer-title" style="font-size:0.65rem">HIDDEN LAYERS</span>
+        // Master card: add/remove entire layers
+        const masterCard = document.createElement('div');
+        masterCard.className = 'layer-header';
+        masterCard.innerHTML = `
+            <span class="layer-title">Layers (${numLayers})</span>
             <div class="layer-buttons">
-                <button id="btn-add-layer" title="Add layer">+L</button>
-                <button id="btn-rm-layer" title="Remove layer">-L</button>
+                <button id="btn-add-layer" title="Add hidden layer">+</button>
+                <button id="btn-rm-layer" title="Remove hidden layer">−</button>
             </div>
         `;
-        container.appendChild(addLayerBtn);
+        container.appendChild(masterCard);
 
-        // Per-layer neuron controls
+        // Per-layer neuron cards
         for (let i = 0; i < numLayers; i++) {
-            const div = document.createElement('div');
-            div.className = 'layer-header';
-            div.innerHTML = `
-                <span class="layer-title">Layer ${i + 1}: ${State.hiddenLayers[i]}</span>
+            const card = document.createElement('div');
+            card.className = 'layer-header';
+            card.innerHTML = `
+                <span class="layer-title">Hidden ${i + 1} &middot; ${State.hiddenLayers[i]}n</span>
                 <div class="layer-buttons">
                     <button data-action="add-neuron" data-layer="${i}" title="Add neuron">+</button>
                     <button data-action="rm-neuron" data-layer="${i}" title="Remove neuron">−</button>
                 </div>
             `;
-            container.appendChild(div);
+            container.appendChild(card);
         }
 
-        // Event listeners
-        document.getElementById('btn-add-layer').addEventListener('click', () => {
+    }
+
+    function handleLayerClick(e) {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        if (btn.id === 'btn-add-layer') {
             if (State.hiddenLayers.length < 6) {
                 State.hiddenLayers.push(2);
                 rebuildNetwork();
                 renderLayerHeaders();
                 renderAll();
             }
-        });
-        document.getElementById('btn-rm-layer').addEventListener('click', () => {
+        } else if (btn.id === 'btn-rm-layer') {
             if (State.hiddenLayers.length > 1) {
                 State.hiddenLayers.pop();
                 rebuildNetwork();
                 renderLayerHeaders();
                 renderAll();
             }
-        });
-        container.querySelectorAll('[data-action="add-neuron"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const l = parseInt(btn.dataset.layer);
-                if (State.hiddenLayers[l] < 8) {
-                    State.hiddenLayers[l]++;
-                    rebuildNetwork();
-                    renderLayerHeaders();
-                    renderAll();
-                }
-            });
-        });
-        container.querySelectorAll('[data-action="rm-neuron"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const l = parseInt(btn.dataset.layer);
-                if (State.hiddenLayers[l] > 1) {
-                    State.hiddenLayers[l]--;
-                    rebuildNetwork();
-                    renderLayerHeaders();
-                    renderAll();
-                }
-            });
-        });
+        } else if (btn.dataset.action === 'add-neuron') {
+            const l = parseInt(btn.dataset.layer);
+            if (State.hiddenLayers[l] < 8) {
+                State.hiddenLayers[l]++;
+                rebuildNetwork();
+                renderLayerHeaders();
+                renderAll();
+            }
+        } else if (btn.dataset.action === 'rm-neuron') {
+            const l = parseInt(btn.dataset.layer);
+            if (State.hiddenLayers[l] > 1) {
+                State.hiddenLayers[l]--;
+                rebuildNetwork();
+                renderLayerHeaders();
+                renderAll();
+            }
+        }
     }
 
     // ========================================================================
@@ -909,7 +907,8 @@
         // Window resize
         window.addEventListener('resize', renderAll);
 
-        // Layer headers
+        // Layer headers (event delegation — single listener)
+        document.getElementById('layer-headers').addEventListener('click', handleLayerClick);
         renderLayerHeaders();
 
         // Initial state

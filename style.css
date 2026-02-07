@@ -371,8 +371,8 @@ input[type="range"]::-moz-range-thumb {
 .layer-headers {
     display: flex;
     justify-content: center;
-    gap: 0;
-    padding: 8px 12px 4px;
+    gap: 10px;
+    padding: 10px 16px 6px;
     position: absolute;
     top: 0;
     left: 0;
@@ -384,12 +384,25 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 80px;
+    gap: 6px;
+    min-width: 90px;
+    padding: 8px 12px 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(114, 0, 203, 0.15);
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.layer-header:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(114, 0, 203, 0.25);
+    transform: translateY(-1px);
 }
 
 .layer-header .layer-title {
-    font-size: 0.7rem;
-    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -397,28 +410,38 @@ input[type="range"]::-moz-range-thumb {
 
 .layer-header .layer-buttons {
     display: flex;
-    gap: 4px;
-    margin-top: 2px;
+    gap: 6px;
 }
 
 .layer-header .layer-buttons button {
-    background: var(--btn-bg);
+    background: var(--bg-canvas);
     border: 1px solid var(--border);
     color: var(--text-dim);
-    border-radius: 3px;
-    width: 20px;
-    height: 20px;
-    font-size: 0.85rem;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .layer-header .layer-buttons button:hover {
     background: var(--btn-hover);
-    color: var(--text);
+    color: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 2px 6px rgba(33, 214, 198, 0.2);
+    transform: scale(1.1);
+}
+
+.layer-header .layer-buttons button:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
 #network-canvas {
